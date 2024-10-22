@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">TOH</string>
+    <string-array name="clothing_types">
+        <item>Select Type Of Clothing</item>
+        <item>Shirts</item>
+        <item>Pants</item>
+        <item>Shoes</item>
+        <item>Blankets</item>
+    </string-array>
+
+    <string-array name="clothing_sizes">
+        <item>Small</item>
+        <item>Medium</item>
+        <item>Large</item>
+        <item>X-Large</item>
+        <item>Not Applicable</item>
+    </string-array>
+
+    <string-array name="clothing_condition">
+        <item>Select Clothing Condition</item>
+        <item>Great</item>
+        <item>Good</item>
+        <item>Fair</item>
+        <item>Worn Out</item>
+    </string-array>
+</resources>

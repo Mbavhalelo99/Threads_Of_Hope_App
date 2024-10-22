@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "929851073222",
+    "project_id": "threadsofhopeteameloquate",
+    "storage_bucket": "threadsofhopeteameloquate.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:929851073222:android:d54b71e3df5d9c352fedc7",
+        "android_client_info": {
+          "package_name": "com.example.toh"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBL8MI5ieOP-3L26f6p499gkXvG3-S8Yu4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
