@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/main"
     android:background="@color/white"
     tools:context=".Profile">
 
@@ -11,12 +12,15 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:id="@+id/linearLayout7"
             android:layout_width="match_parent"
-            android:layout_height="147dp"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -25,26 +29,27 @@
 
                 <ImageView
                     android:id="@+id/homeBtn"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginStart="32dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginStart="28dp"
                     app:layout_constraintBottom_toBottomOf="@+id/loginTitle"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/loginTitle"
-                    app:layout_constraintVertical_bias="0.0"
+                    app:layout_constraintVertical_bias="0.6"
                     app:srcCompat="@drawable/bottom_btn1" />
 
                 <TextView
                     android:id="@+id/loginTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="64dp"
-                    android:layout_marginTop="52dp"
+                    android:layout_marginTop="20dp"
                     android:fontFamily="@font/archivo_black"
                     android:text="PROFILE"
+                    android:textColor="#49454F"
                     android:textSize="28sp"
                     android:textStyle="bold"
-                    app:layout_constraintStart_toEndOf="@+id/homeBtn"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
@@ -52,8 +57,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
-                    android:fontFamily="@font/archivo_narrow"
+                    android:fontFamily="@font/encode_sans_semibold"
                     android:text="Edit Profile Details"
+                    android:textColor="#757575"
                     android:textSize="17sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -75,7 +81,7 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="681dp">
+                    android:layout_height="match_parent">
 
                     <TextView
                         android:id="@+id/donatorIdTextView"
@@ -84,8 +90,9 @@
                         android:layout_marginStart="12dp"
                         android:layout_marginTop="72dp"
                         android:layout_marginEnd="12dp"
-                        android:fontFamily="@font/archivo_narrow"
+                        android:fontFamily="@font/encode_sans_sc_bold"
                         android:text="Donator ID: "
+                        android:textColor="#000000"
                         android:textSize="17sp"
                         android:textStyle="bold"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -95,11 +102,9 @@
 
                     <EditText
                         android:id="@+id/nameEditText"
-                        android:layout_width="350dp"
+                        android:layout_width="310dp"
                         android:layout_height="50dp"
-                        android:layout_marginStart="12dp"
                         android:layout_marginTop="16dp"
-                        android:layout_marginEnd="12dp"
                         android:background="@drawable/textbox"
                         android:fontFamily="@font/archivo_narrow"
                         android:gravity="center"
@@ -113,11 +118,9 @@
 
                     <EditText
                         android:id="@+id/usernameEditText"
-                        android:layout_width="350dp"
+                        android:layout_width="310dp"
                         android:layout_height="50dp"
-                        android:layout_marginStart="12dp"
                         android:layout_marginTop="16dp"
-                        android:layout_marginEnd="12dp"
                         android:background="@drawable/textbox"
                         android:fontFamily="@font/archivo_narrow"
                         android:gravity="center"
@@ -131,11 +134,9 @@
 
                     <EditText
                         android:id="@+id/phoneEditText"
-                        android:layout_width="350dp"
+                        android:layout_width="310dp"
                         android:layout_height="50dp"
-                        android:layout_marginStart="12dp"
                         android:layout_marginTop="16dp"
-                        android:layout_marginEnd="12dp"
                         android:background="@drawable/textbox"
                         android:fontFamily="@font/archivo_narrow"
                         android:gravity="center"
@@ -149,11 +150,9 @@
 
                     <EditText
                         android:id="@+id/emailEditText"
-                        android:layout_width="350dp"
+                        android:layout_width="310dp"
                         android:layout_height="50dp"
-                        android:layout_marginStart="12dp"
                         android:layout_marginTop="16dp"
-                        android:layout_marginEnd="5dp"
                         android:background="@drawable/textbox"
                         android:fontFamily="@font/archivo_narrow"
                         android:gravity="center"
@@ -162,22 +161,20 @@
                         android:textSize="17sp"
                         android:textStyle="normal"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="1.0"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/phoneEditText" />
 
                     <Button
                         android:id="@+id/updateButton"
-                        android:layout_width="292dp"
+                        android:layout_width="250dp"
                         android:layout_height="46dp"
-                        android:layout_marginStart="12dp"
-                        android:layout_marginTop="48dp"
-                        android:layout_marginEnd="12dp"
+                        android:layout_marginTop="30dp"
                         android:backgroundTint="#FCA9A9"
-                        android:fontFamily="@font/archivo_narrow"
+                        android:fontFamily="@font/encode_sans_medium"
                         android:text="UPDATE"
                         android:textColor="#000000"
                         android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.488"
                         app:layout_constraintStart_toStartOf="parent"

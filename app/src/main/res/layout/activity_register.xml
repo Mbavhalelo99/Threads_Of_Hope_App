@@ -10,12 +10,16 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:id="@+id/linearLayout6"
-            android:layout_width="392dp"
-            android:layout_height="103dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">'
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -24,18 +28,17 @@
 
                 <TextView
                     android:id="@+id/loginTitle"
-                    android:layout_width="217dp"
-                    android:layout_height="53dp"
-                    android:layout_marginStart="168dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
-                    android:layout_marginEnd="169dp"
+                    android:layout_marginBottom="34dp"
                     android:fontFamily="@font/archivo_black"
                     android:text="REGISTER"
                     android:textColor="#000000"
                     android:textSize="32sp"
                     android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.395"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -43,8 +46,8 @@
         </LinearLayout>
 
         <ScrollView
-            android:layout_width="393dp"
-            android:layout_height="648dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_marginTop="10dp">
 
             <LinearLayout
@@ -55,15 +58,13 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="702dp">
+                    android:layout_height="match_parent">
 
                     <EditText
                         android:id="@+id/nameEditText"
                         android:layout_width="310dp"
                         android:layout_height="50dp"
-                        android:layout_marginStart="12dp"
                         android:layout_marginTop="50dp"
-                        android:layout_marginEnd="12dp"
                         android:background="@drawable/textbox"
                         android:fontFamily="@font/archivo_narrow"
                         android:gravity="center"
@@ -79,9 +80,7 @@
                         android:id="@+id/usernameEditText"
                         android:layout_width="310dp"
                         android:layout_height="50dp"
-                        android:layout_marginStart="12dp"
                         android:layout_marginTop="16dp"
-                        android:layout_marginEnd="12dp"
                         android:background="@drawable/textbox"
                         android:fontFamily="@font/archivo_narrow"
                         android:gravity="center"
@@ -97,9 +96,7 @@
                         android:id="@+id/phoneEditText"
                         android:layout_width="310dp"
                         android:layout_height="50dp"
-                        android:layout_marginStart="12dp"
                         android:layout_marginTop="16dp"
-                        android:layout_marginEnd="12dp"
                         android:background="@drawable/textbox"
                         android:fontFamily="@font/archivo_narrow"
                         android:gravity="center"
@@ -115,9 +112,7 @@
                         android:id="@+id/emailEditText"
                         android:layout_width="310dp"
                         android:layout_height="50dp"
-                        android:layout_marginStart="12dp"
                         android:layout_marginTop="16dp"
-                        android:layout_marginEnd="12dp"
                         android:background="@drawable/textbox"
                         android:fontFamily="@font/archivo_narrow"
                         android:gravity="center"
@@ -133,9 +128,7 @@
                         android:id="@+id/passwordEditText"
                         android:layout_width="310dp"
                         android:layout_height="50dp"
-                        android:layout_marginStart="12dp"
                         android:layout_marginTop="16dp"
-                        android:layout_marginEnd="12dp"
                         android:background="@drawable/textbox"
                         android:fontFamily="@font/archivo_narrow"
                         android:gravity="center"
@@ -151,9 +144,7 @@
                         android:id="@+id/confirmPasswordEditText"
                         android:layout_width="310dp"
                         android:layout_height="50dp"
-                        android:layout_marginStart="12dp"
                         android:layout_marginTop="16dp"
-                        android:layout_marginEnd="12dp"
                         android:background="@drawable/textbox"
                         android:fontFamily="@font/archivo_narrow"
                         android:gravity="center"
@@ -167,13 +158,11 @@
 
                     <Button
                         android:id="@+id/registerButton"
-                        android:layout_width="match_parent"
+                        android:layout_width="150dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
                         android:layout_marginTop="30dp"
-                        android:layout_marginEnd="12dp"
                         android:backgroundTint="#FCA9A9"
-                        android:fontFamily="@font/archivo_narrow"
+                        android:fontFamily="@font/encode_sans_semibold"
                         android:text="REGISTER"
                         android:textColor="#000000"
                         android:textStyle="bold"

@@ -2,5 +2,7 @@
 <resources>
     <array name="preloaded_fonts" translatable="false">
         <item>@font/black_and_white_picture</item>
+        <item>@font/encode_sans_sc_medium</item>
+        <item>@font/encode_sans_semibold</item>
     </array>
 </resources>

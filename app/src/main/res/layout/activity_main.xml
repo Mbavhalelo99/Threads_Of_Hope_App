@@ -33,7 +33,7 @@
         android:id="@+id/textView"
         android:layout_width="266dp"
         android:layout_height="42dp"
-        android:fontFamily="@font/cantora_one"
+        android:fontFamily="@font/encode_sans_sc_bold"
         android:gravity="center_horizontal"
         android:text="THREADS OF HOPE"
         android:textColor="#000000"

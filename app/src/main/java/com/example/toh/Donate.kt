@@ -42,7 +42,7 @@ class Donate : AppCompatActivity() {
     private lateinit var firestore: FirebaseFirestore
     private lateinit var auth: FirebaseAuth
 
-    private var imageUri: Uri? = null // Store the URI of the uploaded image
+    private var imageUri: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,6 +77,12 @@ class Donate : AppCompatActivity() {
         submitButton.setOnClickListener {
             handleSubmit()
         }
+
+        val homeBtn: ImageView = findViewById(R.id.homeBtn)
+        homeBtn.setOnClickListener {
+            val intent = Intent(this, Home::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun handleSubmit() {
@@ -89,6 +95,12 @@ class Donate : AppCompatActivity() {
         val conditionOfClothing = conditionOfClothingSpinner.selectedItem.toString().trim()
         val deliveryOption = findViewById<RadioButton>(deliveryRadioGroup.checkedRadioButtonId).text.toString()
         val date = dateEditText.text.toString().trim()
+
+        val homeBtn: ImageView = findViewById(R.id.homeBtn)
+        homeBtn.setOnClickListener {
+            val intent = Intent(this, Home::class.java)
+            startActivity(intent)
+        }
 
         if (name.isEmpty() || phone.isEmpty() || address.isEmpty() || email.isEmpty() ||
             typeOfClothing.isEmpty() || conditionOfClothing.isEmpty() || date.isEmpty()) {
