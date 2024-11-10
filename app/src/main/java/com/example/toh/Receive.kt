@@ -5,7 +5,10 @@ import android.os.Bundle
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
 class Receive : AppCompatActivity() {
 
@@ -17,6 +20,7 @@ class Receive : AppCompatActivity() {
     private lateinit var resultTextView: TextView
     private lateinit var requestItemButton: Button
     private lateinit var db: FirebaseFirestore
+    private lateinit var realtimeDatabase: FirebaseDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,7 +33,8 @@ class Receive : AppCompatActivity() {
         checkAvailabilityButton = findViewById(R.id.checkAvailabilityButton)
         resultTextView = findViewById(R.id.resultTextView)
         requestItemButton = findViewById(R.id.requestItemButton)
-        db = FirebaseFirestore.getInstance()
+        db = Firebase.firestore
+        realtimeDatabase = FirebaseDatabase.getInstance()
 
         val homeBtn: ImageView = findViewById(R.id.homeBtn)
         homeBtn.setOnClickListener {
@@ -53,34 +58,87 @@ class Receive : AppCompatActivity() {
             val name = nameEditText.text.toString()
             val phone = phoneEditText.text.toString()
             val typeOfClothing = typeOfClothingSpinner.selectedItem.toString()
-            val sizeOfClothing = sizeOfClothingSpinner.selectedItem.toString()
+            val sizeOfClothing = if (typeOfClothing != "Blankets") sizeOfClothingSpinner.selectedItem.toString() else "N/A"
 
             if (name.isEmpty() || phone.isEmpty() || typeOfClothing.isEmpty() || (typeOfClothing != "Blankets" && sizeOfClothing.isEmpty())) {
                 Toast.makeText(this, "Please fill in all required fields", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            checkItemAvailabilityInFirestore(typeOfClothing, sizeOfClothing)
+            checkItemAvailability(typeOfClothing, sizeOfClothing, name, phone)
         }
     }
 
-    private fun checkItemAvailabilityInFirestore(typeOfClothing: String, sizeOfClothing: String) {
+    private fun checkItemAvailability(typeOfClothing: String, sizeOfClothing: String, name: String, phone: String) {
         db.collection("donations")
-            .whereEqualTo("typeOfClothing", typeOfClothing)
-            .whereEqualTo("sizeOfClothing", sizeOfClothing)
+            .whereEqualTo("cloth_type", typeOfClothing)
+            .whereEqualTo("size", sizeOfClothing)
             .get()
             .addOnSuccessListener { documents ->
                 if (!documents.isEmpty) {
-                    showConfirmationDialog()
+                    saveReceiverInfo(name, phone, typeOfClothing, sizeOfClothing)
+                    addNotification("Request Successful")
                 } else {
                     resultTextView.visibility = View.VISIBLE
                     resultTextView.text = "Item is not available"
                     requestItemButton.visibility = View.GONE
+                    addNotification("Item Not Available")
                 }
             }
             .addOnFailureListener { exception ->
                 Toast.makeText(this, "Error checking availability: ${exception.message}", Toast.LENGTH_SHORT).show()
             }
+    }
+
+    private fun saveReceiverInfo(name: String, phone: String, typeOfClothing: String, sizeOfClothing: String) {
+        val receiverData = mapOf(
+            "name" to name,
+            "phone" to phone,
+            "cloth_type" to typeOfClothing,
+            "size" to sizeOfClothing,
+            "status" to "Requested"
+        )
+
+        // Save to Firestore
+        db.collection("receivers")
+            .add(receiverData)
+            .addOnSuccessListener {
+                // Save to Realtime Database
+                val receiverRef = realtimeDatabase.reference.child("receivers").push()
+                receiverRef.setValue(receiverData)
+                    .addOnSuccessListener {
+                        Toast.makeText(this, "Request Successful", Toast.LENGTH_SHORT).show()
+                        displayNotificationActivity()
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(this, "Failed:", Toast.LENGTH_SHORT).show()
+                    }
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun addNotification(message: String) {
+        val notificationData = hashMapOf(
+            "message" to message,
+            "timestamp" to System.currentTimeMillis()
+        )
+
+        db.collection("notifications")
+            .add(notificationData)
+            .addOnSuccessListener {
+                Toast.makeText(this, "Notification saved", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener { exception ->
+                Toast.makeText(this, "Error saving notification: ${exception.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun displayNotificationActivity() {
+        val intent = Intent(this, Notification::class.java)
+        startActivity(intent)
+        finish()
     }
 
     private fun showConfirmationDialog() {
@@ -97,3 +155,5 @@ class Receive : AppCompatActivity() {
         builder.create().show()
     }
 }
+
+

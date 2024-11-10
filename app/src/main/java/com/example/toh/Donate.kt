@@ -54,8 +54,9 @@ class Donate : AppCompatActivity() {
         emailEditText = findViewById(R.id.emailEditText)
         typeOfClothingSpinnerDonate = findViewById(R.id.typeOfClothingSpinnerDonate)
         conditionOfClothingSpinner = findViewById(R.id.conditionOfClothingSpinner)
-        sizeOfClothingSpinner = findViewById(R.id.sizeOfClothingSpinner) // Initialize sizeOfClothingSpinner here
+        sizeOfClothingSpinner = findViewById(R.id.sizeOfClothingSpinner)
         deliveryRadioGroup = findViewById(R.id.deliveryRadioGroup)
+        dateEditText = findViewById(R.id.dateEditText)
         takePictureButton = findViewById(R.id.takePictureButton)
         uploadPictureButton = findViewById(R.id.uploadPictureButton)
         pictureImageView = findViewById(R.id.pictureImageView)
@@ -90,59 +91,70 @@ class Donate : AppCompatActivity() {
         val phone = phoneEditText.text.toString().trim()
         val address = addressEditText.text.toString().trim()
         val email = emailEditText.text.toString().trim()
-        val typeOfClothing = typeOfClothingSpinnerDonate.selectedItem.toString().trim()
-        val sizeOfClothing = sizeOfClothingSpinner.selectedItem.toString().trim() // Fixed variable name from sizeClothing to sizeOfClothing
-        val conditionOfClothing = conditionOfClothingSpinner.selectedItem.toString().trim()
-        val deliveryOption = findViewById<RadioButton>(deliveryRadioGroup.checkedRadioButtonId).text.toString()
-        val date = dateEditText.text.toString().trim()
-
-        val homeBtn: ImageView = findViewById(R.id.homeBtn)
-        homeBtn.setOnClickListener {
-            val intent = Intent(this, Home::class.java)
-            startActivity(intent)
-        }
+        val clothType = typeOfClothingSpinnerDonate.selectedItem.toString().trim()
+        val size = sizeOfClothingSpinner.selectedItem.toString().trim()
+        val condition = conditionOfClothingSpinner.selectedItem.toString().trim()
+        val deliveryType = findViewById<RadioButton>(deliveryRadioGroup.checkedRadioButtonId).text.toString()
+        val dropPickDate = dateEditText.text.toString().trim()
 
         if (name.isEmpty() || phone.isEmpty() || address.isEmpty() || email.isEmpty() ||
-            typeOfClothing.isEmpty() || conditionOfClothing.isEmpty() || date.isEmpty()) {
+            clothType.isEmpty() || condition.isEmpty() || dropPickDate.isEmpty()) {
             Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
-        } else {
-            val userId = auth.currentUser?.uid ?: return
-            val donationData = mapOf(
-                "name" to name,
-                "phone" to phone,
-                "address" to address,
-                "email" to email,
-                "typeOfClothing" to typeOfClothing,
-                "sizeOfClothing" to sizeOfClothing, // Fixed variable name here
-                "conditionOfClothing" to conditionOfClothing,
-                "deliveryOption" to deliveryOption,
-                "date" to date,
-                "imageUri" to imageUri.toString() // Save the image URI
-            )
-
-            // Save donation data to Realtime Database
-            realtimeDatabase.child("donations").child(userId).push().setValue(donationData)
-                .addOnSuccessListener {
-                    Toast.makeText(this, "Donation details saved to Realtime Database", Toast.LENGTH_SHORT).show()
-                }
-                .addOnFailureListener {
-                    Toast.makeText(this, "Failed to save to Realtime Database: ${it.message}", Toast.LENGTH_SHORT).show()
-                }
-
-            // Save donation data to Firestore
-            firestore.collection("donations").add(donationData)
-                .addOnSuccessListener { documentReference ->
-                    Toast.makeText(this, "Donation details saved to Firestore with ID: ${documentReference.id}", Toast.LENGTH_SHORT).show()
-                }
-                .addOnFailureListener { exception ->
-                    Toast.makeText(this, "Failed to save to Firestore: ${exception.message}", Toast.LENGTH_SHORT).show()
-                }
-
-            // Redirect to the profile page
-            val intent = Intent(this, Home::class.java)
-            startActivity(intent)
-            finish() // Optionally finish this activity
+            return
         }
+
+        val userId = auth.currentUser?.uid ?: return
+        val donationData = mapOf(
+            "name" to name,
+            "phone" to phone,
+            "address" to address,
+            "email" to email,
+            "cloth_type" to clothType,
+            "size" to size,
+            "condition" to condition,
+            "delivery_type" to deliveryType,
+            "drop_pick_date" to dropPickDate,
+            ("image" to imageUri?.toString() ?: "") as Pair<Any, Any> // Save image URI if available
+        )
+
+        // Save donation data to Realtime Database under "donations" section with a unique user ID
+        realtimeDatabase.child("donations").child(userId).push().setValue(donationData)
+            .addOnSuccessListener {
+                // Only add notification here
+                addNotificationToFirestore(name, clothType)
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Donation Failed, Please Try Again", Toast.LENGTH_SHORT).show()
+            }
+
+        // Save donation data to Firestore as well
+        firestore.collection("donations").add(donationData)
+            .addOnSuccessListener { documentReference ->
+                Toast.makeText(this, "Thank You For Donating", Toast.LENGTH_SHORT).show()
+                // Redirect to the Home page
+                val intent = Intent(this, Home::class.java)
+                startActivity(intent)
+                finish() // Optionally finish this activity
+            }
+            .addOnFailureListener { exception ->
+                Toast.makeText(this, "Please Try Again", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+
+    private fun addNotificationToFirestore(name: String, clothType: String) {
+        val notificationData = mapOf(
+            "message" to "New donation from $name: $clothType",
+            "timestamp" to System.currentTimeMillis() // Optionally add a timestamp
+        )
+
+        firestore.collection("notifications").add(notificationData)
+            .addOnSuccessListener {
+                // Notification added successfully
+            }
+            .addOnFailureListener { exception ->
+                Toast.makeText(this, "Failed to add notification", Toast.LENGTH_SHORT).show()
+            }
     }
 
     private fun dispatchTakePictureIntent() {
@@ -179,6 +191,8 @@ class Donate : AppCompatActivity() {
         }
     }
 }
+
+
 
 
 

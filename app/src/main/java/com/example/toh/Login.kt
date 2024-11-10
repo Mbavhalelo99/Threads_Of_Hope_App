@@ -67,7 +67,7 @@ class Login : AppCompatActivity() {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    Toast.makeText(this, "Logged in as $email", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Welcome $email", Toast.LENGTH_SHORT).show()
 
                     // Save login details if "Remember me" is checked
                     if (rememberMe) {
@@ -93,7 +93,7 @@ class Login : AppCompatActivity() {
                 }
             }
             .addOnFailureListener { exception ->
-                Toast.makeText(this, "Error: ${exception.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Try Again Or Register", Toast.LENGTH_SHORT).show()
             }
     }
 }

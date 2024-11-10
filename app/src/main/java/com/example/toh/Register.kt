@@ -79,7 +79,7 @@ class Register : AppCompatActivity() {
                     finish()
                 } else {
                     // User registration failed
-                    Toast.makeText(this, "Registration failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Registration failed, Try Again", Toast.LENGTH_SHORT).show()
                 }
             }
     }
