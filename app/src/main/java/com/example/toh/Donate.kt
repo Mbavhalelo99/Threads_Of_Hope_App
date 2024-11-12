@@ -1,6 +1,7 @@
 package com.example.toh
 
 import android.app.Activity
+import android.app.DatePickerDialog
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
@@ -18,6 +19,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
+import java.util.Calendar
 
 class Donate : AppCompatActivity() {
 
@@ -67,6 +69,11 @@ class Donate : AppCompatActivity() {
         realtimeDatabase = FirebaseDatabase.getInstance().reference
         firestore = FirebaseFirestore.getInstance()
 
+        // Set up date picker for dateEditText
+        dateEditText.setOnClickListener {
+            showDatePicker()
+        }
+
         takePictureButton.setOnClickListener {
             dispatchTakePictureIntent()
         }
@@ -84,6 +91,28 @@ class Donate : AppCompatActivity() {
             val intent = Intent(this, Home::class.java)
             startActivity(intent)
         }
+    }
+
+    private fun showDatePicker() {
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+        val datePickerDialog = DatePickerDialog(
+            this,
+            { _, selectedYear, selectedMonth, selectedDay ->
+                // Set the selected date on the EditText
+                val formattedDate = "${selectedDay.toString().padStart(2, '0')}/" +
+                        "${(selectedMonth + 1).toString().padStart(2, '0')}/" +
+                        "$selectedYear"
+                dateEditText.setText(formattedDate)
+            },
+            year,
+            month,
+            day
+        )
+        datePickerDialog.show()
     }
 
     private fun handleSubmit() {
@@ -114,41 +143,36 @@ class Donate : AppCompatActivity() {
             "condition" to condition,
             "delivery_type" to deliveryType,
             "drop_pick_date" to dropPickDate,
-            ("image" to imageUri?.toString() ?: "") as Pair<Any, Any> // Save image URI if available
+            "image" to (imageUri?.toString() ?: "") // Save image URI if available
         )
 
-        // Save donation data to Realtime Database under "donations" section with a unique user ID
         realtimeDatabase.child("donations").child(userId).push().setValue(donationData)
             .addOnSuccessListener {
-                // Only add notification here
-                addNotificationToFirestore(name, clothType)
+                addNotificationToFirestore(userId, name, clothType)
             }
             .addOnFailureListener {
                 Toast.makeText(this, "Donation Failed, Please Try Again", Toast.LENGTH_SHORT).show()
             }
 
-        // Save donation data to Firestore as well
-        firestore.collection("donations").add(donationData)
-            .addOnSuccessListener { documentReference ->
+        firestore.collection("users").document(userId).collection("donations").add(donationData)
+            .addOnSuccessListener {
                 Toast.makeText(this, "Thank You For Donating", Toast.LENGTH_SHORT).show()
-                // Redirect to the Home page
                 val intent = Intent(this, Home::class.java)
                 startActivity(intent)
-                finish() // Optionally finish this activity
+                finish()
             }
-            .addOnFailureListener { exception ->
+            .addOnFailureListener {
                 Toast.makeText(this, "Please Try Again", Toast.LENGTH_SHORT).show()
             }
     }
 
-
-    private fun addNotificationToFirestore(name: String, clothType: String) {
+    private fun addNotificationToFirestore(userId: String, name: String, clothType: String) {
         val notificationData = mapOf(
             "message" to "New donation from $name: $clothType",
             "timestamp" to System.currentTimeMillis() // Optionally add a timestamp
         )
 
-        firestore.collection("notifications").add(notificationData)
+        firestore.collection("users").document(userId).collection("notification").add(notificationData)
             .addOnSuccessListener {
                 // Notification added successfully
             }
@@ -191,6 +215,7 @@ class Donate : AppCompatActivity() {
         }
     }
 }
+
 
 
 

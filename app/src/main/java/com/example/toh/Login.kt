@@ -42,13 +42,11 @@ class Login : AppCompatActivity() {
         }
 
         forgotPasswordTextView.setOnClickListener {
-            // Navigate to ForgotPasswordActivity
             val intent = Intent(this, ForgotPassword::class.java)
             startActivity(intent)
         }
 
         registerTextView.setOnClickListener {
-            // Navigate to RegisterActivity
             val intent = Intent(this, Register::class.java)
             startActivity(intent)
         }

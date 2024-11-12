@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".Information">
 
     <LinearLayout
@@ -24,7 +25,7 @@
                 android:id="@+id/homeBtn"
                 android:layout_width="26dp"
                 android:layout_height="25dp"
-                android:layout_marginStart="28dp"
+                android:layout_marginStart="35dp"
                 app:layout_constraintBottom_toBottomOf="@+id/loginTitle"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/loginTitle"
@@ -81,12 +82,12 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="1141dp">
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:id="@+id/textView12"
                     android:layout_width="300dp"
-                    android:layout_height="160dp"
+                    android:layout_height="wrap_content"
                     android:fontFamily="@font/encode_sans_medium"
                     android:gravity="center"
                     android:text="At Threads of Hope, our mission is to connect people who want to make a difference through clothing donations. We provide an easy, efficient, and compassionate way for donors and recipients to share and receive essential clothing items. Our platform fosters a community where kindness and support come together to help those in need, one garment at a time."
@@ -241,7 +242,7 @@
                     android:id="@+id/imageView6"
                     android:layout_width="150dp"
                     android:layout_height="150dp"
-                    android:layout_marginTop="30dp"
+                    android:layout_marginTop="20dp"
                     app:layout_constraintEnd_toEndOf="@+id/textView24"
                     app:layout_constraintStart_toStartOf="@+id/textView24"
                     app:layout_constraintTop_toBottomOf="@+id/textView24"
@@ -251,15 +252,27 @@
                     android:id="@+id/textView25"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="72dp"
                     android:fontFamily="@font/encode_sans_sc_bold"
                     android:text="Threads Of Hope"
                     android:textColor="#231F20"
                     android:textSize="20sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="@+id/imageView6"
                     app:layout_constraintStart_toStartOf="@+id/imageView6"
                     app:layout_constraintTop_toBottomOf="@+id/imageView6" />
+
+                <TextView
+                    android:id="@+id/textView28"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="90dp"
+                    android:layout_marginBottom="20dp"
+                    android:fontFamily="@font/encode_sans_sc_medium"
+                    android:text="Developed By TeamEloquent"
+                    android:textSize="10sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView25" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
     </ScrollView>

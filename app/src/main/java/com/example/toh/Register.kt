@@ -7,6 +7,9 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FirebaseFirestore
 
 class Register : AppCompatActivity() {
 
@@ -18,13 +21,17 @@ class Register : AppCompatActivity() {
     private lateinit var confirmPasswordEditText: EditText
     private lateinit var registerButton: Button
     private lateinit var auth: FirebaseAuth
+    private lateinit var firestore: FirebaseFirestore
+    private lateinit var realtimeDatabase: FirebaseDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
-        // Initialize Firebase Auth
+        // Initialize Firebase instances
         auth = FirebaseAuth.getInstance()
+        firestore = FirebaseFirestore.getInstance()
+        realtimeDatabase = FirebaseDatabase.getInstance()
 
         nameEditText = findViewById(R.id.nameEditText)
         usernameEditText = findViewById(R.id.usernameEditText)
@@ -59,7 +66,7 @@ class Register : AppCompatActivity() {
             }
 
             // Register the user with Firebase Authentication
-            registerUserWithEmail(email, password)
+            registerUserWithEmail(name, username, phone, email, password)
         }
     }
 
@@ -68,14 +75,22 @@ class Register : AppCompatActivity() {
         return passwordPattern.matches(password)
     }
 
-    private fun registerUserWithEmail(email: String, password: String) {
+    private fun registerUserWithEmail(name: String, username: String, phone: String, email: String, password: String) {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     // User registration successful
+                    val userId = auth.currentUser?.uid ?: return@addOnCompleteListener
+
+                    // Save user data in Realtime Database
+                    saveUserDataToRealtimeDatabase(userId, name, username, phone, email)
+
+                    // Save user data in Firestore with additional collections
+                    saveUserDataToFirestore(userId, name, username, phone, email)
+
+                    // Navigate to Login activity
                     Toast.makeText(this, "Successfully registered", Toast.LENGTH_SHORT).show()
-                    val intent = Intent(this, Login::class.java)
-                    startActivity(intent)
+                    startActivity(Intent(this, Login::class.java))
                     finish()
                 } else {
                     // User registration failed
@@ -83,5 +98,49 @@ class Register : AppCompatActivity() {
                 }
             }
     }
+
+    private fun saveUserDataToRealtimeDatabase(userId: String, name: String, username: String, phone: String, email: String) {
+        val user = mapOf(
+            "name" to name,
+            "username" to username,
+            "phone" to phone,
+            "email" to email
+        )
+        realtimeDatabase.reference.child("users").child(userId).setValue(user)
+            .addOnSuccessListener {
+                Toast.makeText(this, "User saved to Realtime Database", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Failed to save user to Realtime Database", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun saveUserDataToFirestore(userId: String, name: String, username: String, phone: String, email: String) {
+        val user = mapOf(
+            "name" to name,
+            "username" to username,
+            "phone" to phone,
+            "email" to email
+        )
+        val userDocRef = firestore.collection("users").document(userId)
+
+        userDocRef.set(user)
+            .addOnSuccessListener {
+                Toast.makeText(this, "User saved to Firestore", Toast.LENGTH_SHORT).show()
+
+                // Create subcollections in Firestore
+                createSubcollectionsForUser(userDocRef)
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Failed to save user to Firestore", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun createSubcollectionsForUser(userDocRef: DocumentReference) {
+        val donationsCollection = userDocRef.collection("donations")
+        val receiversCollection = userDocRef.collection("receivers")
+        val notificationsCollection = userDocRef.collection("notification")
+    }
 }
+
 

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -21,10 +22,15 @@ class Receive : AppCompatActivity() {
     private lateinit var requestItemButton: Button
     private lateinit var db: FirebaseFirestore
     private lateinit var realtimeDatabase: FirebaseDatabase
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_receive)
+
+        auth = FirebaseAuth.getInstance()
+        db = Firebase.firestore
+        realtimeDatabase = FirebaseDatabase.getInstance()
 
         nameEditText = findViewById(R.id.nameEditText)
         phoneEditText = findViewById(R.id.phoneEditText)
@@ -33,8 +39,6 @@ class Receive : AppCompatActivity() {
         checkAvailabilityButton = findViewById(R.id.checkAvailabilityButton)
         resultTextView = findViewById(R.id.resultTextView)
         requestItemButton = findViewById(R.id.requestItemButton)
-        db = Firebase.firestore
-        realtimeDatabase = FirebaseDatabase.getInstance()
 
         val homeBtn: ImageView = findViewById(R.id.homeBtn)
         homeBtn.setOnClickListener {
@@ -70,14 +74,29 @@ class Receive : AppCompatActivity() {
     }
 
     private fun checkItemAvailability(typeOfClothing: String, sizeOfClothing: String, name: String, phone: String) {
-        db.collection("donations")
-            .whereEqualTo("cloth_type", typeOfClothing)
-            .whereEqualTo("size", sizeOfClothing)
-            .get()
-            .addOnSuccessListener { documents ->
-                if (!documents.isEmpty) {
-                    saveReceiverInfo(name, phone, typeOfClothing, sizeOfClothing)
-                    addNotification("Request Successful")
+        // Reference to the 'donations' node in Realtime Database
+        val donationsRef = realtimeDatabase.reference.child("donations")
+
+        donationsRef.get()
+            .addOnSuccessListener { dataSnapshot ->
+                var itemAvailable = false
+
+                for (userSnapshot in dataSnapshot.children) {
+                    for (itemSnapshot in userSnapshot.children) {
+                        val clothType = itemSnapshot.child("cloth_type").value.toString()
+                        val size = itemSnapshot.child("size").value.toString()
+
+                        if (clothType == typeOfClothing && (size == sizeOfClothing || sizeOfClothing == "N/A")) {
+                            itemAvailable = true
+                            break
+                        }
+                    }
+                    if (itemAvailable) break
+                }
+
+                if (itemAvailable) {
+                    // Show confirmation dialog if item is available
+                    showConfirmationDialog(name, phone, typeOfClothing, sizeOfClothing)
                 } else {
                     resultTextView.visibility = View.VISIBLE
                     resultTextView.text = "Item is not available"
@@ -90,6 +109,8 @@ class Receive : AppCompatActivity() {
             }
     }
 
+
+
     private fun saveReceiverInfo(name: String, phone: String, typeOfClothing: String, sizeOfClothing: String) {
         val receiverData = mapOf(
             "name" to name,
@@ -99,8 +120,11 @@ class Receive : AppCompatActivity() {
             "status" to "Requested"
         )
 
-        // Save to Firestore
-        db.collection("receivers")
+        val userId = auth.currentUser?.uid ?: return
+
+        // Save to Firestore under user's 'donations' subcollection
+        db.collection("users").document(userId)
+            .collection("receivers")
             .add(receiverData)
             .addOnSuccessListener {
                 // Save to Realtime Database
@@ -125,7 +149,11 @@ class Receive : AppCompatActivity() {
             "timestamp" to System.currentTimeMillis()
         )
 
-        db.collection("notifications")
+        val userId = auth.currentUser?.uid ?: return
+
+        // Save notification under the user's 'notifications' subcollection
+        db.collection("users").document(userId)
+            .collection("notification")
             .add(notificationData)
             .addOnSuccessListener {
                 Toast.makeText(this, "Notification saved", Toast.LENGTH_SHORT).show()
@@ -141,11 +169,14 @@ class Receive : AppCompatActivity() {
         finish()
     }
 
-    private fun showConfirmationDialog() {
+    private fun showConfirmationDialog(name: String, phone: String, typeOfClothing: String, sizeOfClothing: String) {
         val builder = androidx.appcompat.app.AlertDialog.Builder(this)
         builder.setTitle("Confirm Request")
         builder.setMessage("The item is available. Do you want to proceed with the request?")
         builder.setPositiveButton("Accept") { dialog, _ ->
+            // Proceed with saving the receiver information and notifications
+            saveReceiverInfo(name, phone, typeOfClothing, sizeOfClothing)
+            addNotification("New request from $name: $typeOfClothing")
             Toast.makeText(this, "Item requested successfully", Toast.LENGTH_SHORT).show()
             dialog.dismiss()
         }
@@ -154,6 +185,8 @@ class Receive : AppCompatActivity() {
         }
         builder.create().show()
     }
+
 }
+
 
 

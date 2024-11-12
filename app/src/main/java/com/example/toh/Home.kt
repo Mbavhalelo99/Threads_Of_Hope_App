@@ -1,9 +1,11 @@
 package com.example.toh
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -50,15 +52,49 @@ class Home : AppCompatActivity() {
             startActivity(Intent(this, Notification::class.java))
         }
 
-        // Logout and delete user data on delBtn click
+        // Show options for logout or delete account on delBtn click
         delBtn.setOnClickListener {
-            val user = auth.currentUser
-            if (user != null) {
-                deleteUser(user)
-            } else {
-                Toast.makeText(this, "No user logged in", Toast.LENGTH_SHORT).show()
-            }
+            showLogoutOrDeleteOptions()
         }
+    }
+
+    private fun showLogoutOrDeleteOptions() {
+        val options = arrayOf("Log Out", "Delete Account")
+
+        // Create a dialog to give options to the user
+        AlertDialog.Builder(this)
+            .setTitle("Choose an option")
+            .setItems(options) { _, which ->
+                when (which) {
+                    0 -> logoutUser()
+                    1 -> confirmDeleteAccount()
+                }
+            }
+            .show()
+    }
+
+    private fun logoutUser() {
+        auth.signOut()
+        Toast.makeText(this, "Logged out", Toast.LENGTH_SHORT).show()
+        startActivity(Intent(this, Login::class.java))
+        finish()
+    }
+
+    private fun confirmDeleteAccount() {
+        // Show a confirmation dialog before deleting the account
+        AlertDialog.Builder(this)
+            .setTitle("Confirm Delete Account")
+            .setMessage("Are you sure you want to delete your account? This action cannot be undone.")
+            .setPositiveButton("Yes") { _, _ ->
+                val user = auth.currentUser
+                if (user != null) {
+                    deleteUser(user)
+                }
+            }
+            .setNegativeButton("No") { dialog, _ ->
+                dialog.dismiss()  // Dismiss the dialog if the user selects "No"
+            }
+            .show()
     }
 
     private fun deleteUser(user: FirebaseUser) {

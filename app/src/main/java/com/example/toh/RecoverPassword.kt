@@ -4,28 +4,33 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 
-class ForgotPassword : AppCompatActivity() {
+class RecoverPassword : AppCompatActivity() {
 
     private lateinit var emailEditText: EditText
     private lateinit var resetButton: Button
     private lateinit var database: FirebaseDatabase
     private lateinit var usersRef: DatabaseReference
-    private lateinit var textView33: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_forgot_password)
+        enableEdgeToEdge()
+        setContentView(R.layout.activity_recover_password)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
 
         emailEditText = findViewById(R.id.emailEditText)
         resetButton = findViewById(R.id.resetButton)
-        textView33 = findViewById(R.id.textView33)
 
         database = FirebaseDatabase.getInstance()
         usersRef = database.getReference("users")
@@ -43,15 +48,5 @@ class ForgotPassword : AppCompatActivity() {
                 finish()
             }
         }
-
-        val bckBtn: ImageView = findViewById(R.id.bckBtn)
-        bckBtn.setOnClickListener {
-            val intent = Intent(this, Login::class.java)
-            startActivity(intent)
-        }
     }
 }
-
-
-
-

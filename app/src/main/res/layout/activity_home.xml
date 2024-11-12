@@ -241,6 +241,18 @@
                     app:layout_constraintTop_toTopOf="@+id/notBtn"
                     app:srcCompat="@drawable/pngegg" />
 
+                <TextView
+                    android:id="@+id/textView29"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/encode_sans_sc_medium"
+                    android:text="About Us"
+                    android:textColor="#000000"
+                    android:textSize="8sp"
+                    app:layout_constraintEnd_toEndOf="@+id/infoBtn"
+                    app:layout_constraintStart_toStartOf="@+id/infoBtn"
+                    app:layout_constraintTop_toBottomOf="@+id/infoBtn" />
+
                 <ImageView
                     android:id="@+id/delBtn"
                     android:layout_width="30dp"
@@ -251,17 +263,40 @@
                     app:layout_constraintTop_toTopOf="@+id/notBtn"
                     app:srcCompat="@drawable/delete" />
 
+                <TextView
+                    android:id="@+id/textView30"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/encode_sans_sc_medium"
+                    android:text="Log Out/Delete"
+                    android:textColor="#000000"
+                    android:textSize="8sp"
+                    app:layout_constraintEnd_toEndOf="@+id/delBtn"
+                    app:layout_constraintStart_toStartOf="@+id/delBtn"
+                    app:layout_constraintTop_toBottomOf="@+id/delBtn" />
+
                 <ImageView
                     android:id="@+id/notBtn"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.498"
+                    app:layout_constraintHorizontal_bias="0.51"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.608"
                     app:srcCompat="@drawable/pngeggnoti" />
+
+                <TextView
+                    android:id="@+id/textView31"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/encode_sans_sc_medium"
+                    android:text="Notifications"
+                    android:textColor="#000000"
+                    android:textSize="10sp"
+                    app:layout_constraintEnd_toEndOf="@+id/notBtn"
+                    app:layout_constraintStart_toStartOf="@+id/notBtn"
+                    app:layout_constraintTop_toBottomOf="@+id/notBtn" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
